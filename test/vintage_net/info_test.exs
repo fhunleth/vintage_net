@@ -93,6 +93,14 @@ defmodule VintageNet.InfoTest do
     assert output =~ "No interfaces"
   end
 
+  test "info can return chardata" do
+    output = Info.info(into: "")
+
+    assert output =~ "All interfaces"
+    assert output =~ "Available interfaces"
+    assert output =~ "No interfaces"
+  end
+
   test "info works with a configured interface" do
     capture_log(fn ->
       :ok = VintageNet.configure("eth0", %{type: VintageNetTest.TestTechnology})

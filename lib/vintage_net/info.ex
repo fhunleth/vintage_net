@@ -6,16 +6,24 @@ defmodule VintageNet.Info do
   @doc """
   Print the current network status
   """
-  @spec info([VintageNet.info_options()]) :: :ok
+  @spec info([VintageNet.info_options()]) :: :ok | Collectable.t()
   def info(opts \\ []) do
+    into = Keyword.get(opts, :into, IO.stream(:stdio, :line))
+
+    result = for io <- info_iodata(opts), into: into, do: io
+
+    if match?(%IO.Stream{}, result), do: :ok, else: result
+  end
+
+  defp info_iodata(opts) do
     case version() do
       :not_loaded ->
-        IO.puts("VintageNet hasn't been loaded yet. Try again soon.")
+        "VintageNet hasn't been loaded yet. Try again soon."
 
       version ->
         ifnames = interfaces_to_show()
 
-        IO.write([format_header(version), format_interfaces(ifnames, opts)])
+        [format_header(version), format_interfaces(ifnames, opts)]
     end
   end
 
@@ -30,7 +38,7 @@ defmodule VintageNet.Info do
   end
 
   defp format_interfaces([], _opts) do
-    "No interfaces"
+    "No interfaces\n\n"
   end
 
   defp format_interfaces(ifnames, opts) do

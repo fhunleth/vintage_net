@@ -70,9 +70,10 @@ defmodule VintageNet do
   @typedoc """
   Valid options for `VintageNet.info/1`
 
+  * `:into` - Specify an implementation of `Collectable` to send the chardata result into. (defaults to `IO.stream(:stdio, :line)`)
   * `:redact` - Whether to hide passwords and similar information from the output (defaults to `true`)
   """
-  @type info_options :: {:redact, boolean()}
+  @type info_options :: [{:into, boolean()}, {:redact, boolean()}]
 
   @doc """
   Return a list of all interfaces on the system
